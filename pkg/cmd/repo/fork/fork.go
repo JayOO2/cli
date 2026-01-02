@@ -237,7 +237,10 @@ func forkRun(opts *ForkOptions) error {
 		}
 	}
 
-	if (inParent && (!opts.Remote && !opts.PromptRemote)) || (!inParent && (!opts.Clone && !opts.PromptClone)) {
+	if inParent && (!opts.Remote && !opts.PromptRemote) {
+		return nil
+	}
+	if !inParent && (!opts.Clone && !opts.PromptClone) && (!opts.Remote && !opts.PromptRemote) {
 		return nil
 	}
 
