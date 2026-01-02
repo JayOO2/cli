@@ -179,15 +179,13 @@ func (f *finder) Find(opts FindOptions) (*api.PullRequest, ghrepo.Interface, err
 		} else {
 			f.branchName = opts.Selector
 
-			qualifiedHeadRef, err := ParseQualifiedHeadRef(f.branchName)
+			prRefsResolver := NewPullRequestFindRefsResolver(
+				f.gitConfigClient,
+				f.remotesFn,
+			)
+			prRefs, err = prRefsResolver.ResolvePullRequestRefs(f.baseRefRepo, opts.BaseBranch, f.branchName)
 			if err != nil {
 				return nil, nil, err
-			}
-
-			prRefs = PRFindRefs{
-				qualifiedHeadRef: qualifiedHeadRef,
-				baseRepo:         f.baseRefRepo,
-				baseBranchName:   o.SomeIfNonZero(opts.BaseBranch),
 			}
 		}
 	}
